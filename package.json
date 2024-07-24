@@ -1,0 +1,12 @@
+{
+  "name": "minigame",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "https://github.com/Leonardo3737/miniGame.git",
+  "author": "Leonardo Vinicius",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node app.js"
+  }
+}
