@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px black solid
+    }
+  </style>
+
+</head>
+
+<body>
+  <canvas id="screenGame" width="500px" height="500px"></canvas>
+  <script>
+
+
+
+    document.addEventListener('DOMContentLoaded', (e) => {
+      const screenGame = document.getElementById('screenGame')
+      const player = screenGame.getContext('2d')
+      player.fillRect(50, 50, 50,50)
+    })
+    document.addEventListener('keydown', (e) => {
+      console.log(e);
+    })
+  </script>
+</body>
+
+</html>
