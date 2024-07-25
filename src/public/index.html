@@ -10,23 +10,58 @@
       border: 1px black solid
     }
   </style>
-
+  <script src="entities/Player.js"></script>
+  <script src="entities/Game.js"></script>
+  <script src="controls/KeyboardInput.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-  <canvas id="screenGame" width="500px" height="500px"></canvas>
+  <canvas id="screenGame" width="600" height="600"></canvas>
+
   <script>
+    const socket = io()
+    const screenGame = document.getElementById('screenGame')
+    const genericBody = screenGame.getContext('2d')
+    const game = new Game(screenGame, genericBody)
 
+    const keyboardInput = new KeyboardInput(document)
 
+    let player
 
-    document.addEventListener('DOMContentLoaded', (e) => {
-      const screenGame = document.getElementById('screenGame')
-      const player = screenGame.getContext('2d')
-      player.fillRect(50, 50, 50,50)
+    /* document.addEventListener('DOMContentLoaded', () => {
+      keyboardInput.subscribe(key => {
+        socket.emit('test', 'asd')
+        game.movementEvent(key, player2.id)
+      })
+      game.renderGame()
+    }) */
+
+    socket.on('new-player', ({ idPlayer, position, players }) => {
+      player = new Player(idPlayer, genericBody, position.x, position.y, game, true)
+      game.addPlayer(player)
+
+      console.log(players);
+
+      players.map(p => {
+        if (p.idPlayer === idPlayer) return
+        game.addPlayer(new Player(p.idPlayer, genericBody, p.position.x, p.position.y, game, false))
+      })
+
+      game.updateScreen()
+      keyboardInput.subscribe(key => {
+        //socket.emit('test', 'asd')
+        console.log(idPlayer);
+        game.movementEvent(key, idPlayer)
+      })
     })
-    document.addEventListener('keydown', (e) => {
-      console.log(e);
+
+    socket.on('exit-player', (idPlayer) => {
+      console.log(idPlayer, player.id);
+      //if (idPlayer === player.id) return
+      game.removePlayer(idPlayer)
     })
+
   </script>
 </body>
 
