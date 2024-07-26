@@ -1,4 +1,4 @@
-export default function GeneretePosition() {
+export default function createPosition() {
   const randomNumber = () => parseInt(Math.random() * 1000)
   let x = randomNumber()
   while (x > 579 || x%10 !== 0) x = randomNumber()

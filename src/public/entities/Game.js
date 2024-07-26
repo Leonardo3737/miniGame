@@ -1,10 +1,6 @@
 class Game {
-  playerList = []
-  screenGame
-  genericBody
-
   constructor(screenGame, genericBody) {
-    this.playerList
+    this.playerList = []
     this.screenGame = screenGame
     this.genericBody = genericBody
   }
@@ -27,28 +23,28 @@ class Game {
     this.genericBody.clearRect(0, 0, this.screenGame.width, this.screenGame.height)
     this.renderGame()
   }
-
-  movementEvent(key, idPlayer) {
+  
+  movementEvent(direction, idPlayer) {
     const playerToMove = this.playerList.find(p => p.id === idPlayer)
-    const position = {x: playerToMove.posX, y : playerToMove.posY}
-    switch (key) {
-      case 'w':
-        if(!this.verifyMov('top', position)) return
+    const position = {x: playerToMove.position.x, y : playerToMove.position.y}
+
+    if(!this.verifyMov(direction, position)) return false
+    
+    switch (direction) {
+      case 'top':
         playerToMove.moveY(-10);
         break;
-      case 'a':
-        if(!this.verifyMov('left', position)) return
+      case 'left':
         playerToMove.moveX(-10);
         break;
-      case 's':
-        if(!this.verifyMov('bottom', position)) return
+      case 'bottom':
         playerToMove.moveY(10);
         break;
-      case 'd':
-        if(!this.verifyMov('right', position)) return
+      case 'right':
         playerToMove.moveX(10);
         break;
     }
+    return true
   }
 
   verifyMov(direction, position) {
