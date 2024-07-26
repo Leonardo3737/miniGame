@@ -38,29 +38,48 @@
     }) */
 
     socket.on('new-player', ({ idPlayer, position, players }) => {
-      player = new Player(idPlayer, genericBody, position.x, position.y, game, true)
-      game.addPlayer(player)
-
-      console.log(players);
+      if (!player) {
+        player = new Player(idPlayer, genericBody, position.x, position.y, game, true)
+        game.addPlayer(player)
+        keyboardInput.subscribe(key => movementPlayer(key, idPlayer))
+      }
 
       players.map(p => {
-        if (p.idPlayer === idPlayer) return
-        game.addPlayer(new Player(p.idPlayer, genericBody, p.position.x, p.position.y, game, false))
+        if (p.idPlayer === player.id) return
+
+        let auxPlayer = new Player(p.idPlayer, genericBody, p.position.x, p.position.y, game, false)
+        game.addPlayer(auxPlayer)
       })
 
       game.updateScreen()
-      keyboardInput.subscribe(key => {
-        //socket.emit('test', 'asd')
-        console.log(idPlayer);
-        game.movementEvent(key, idPlayer)
-      })
     })
 
     socket.on('exit-player', (idPlayer) => {
-      console.log(idPlayer, player.id);
-      //if (idPlayer === player.id) return
       game.removePlayer(idPlayer)
     })
+
+    socket.on('update-screen', (players)=> {
+      players.map(p => {
+        if (p.idPlayer === player.id) return
+
+        game.removePlayer(p.idPlayer)
+        let auxPlayer = new Player(p.idPlayer, genericBody, p.position.x, p.position.y, game, false)
+        game.addPlayer(auxPlayer)
+      })
+      game.updateScreen()
+    })
+
+    function movementPlayer(key, idPlayer) {
+      game.movementEvent(key, idPlayer)
+      const obj = {
+        idPlayer,
+        position: {
+          x: player.posX,
+          y: player.posY
+        }
+      }
+      socket.emit('mov-player', obj)
+    }
 
   </script>
 </body>

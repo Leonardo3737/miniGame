@@ -29,7 +29,6 @@ class Game {
   }
 
   movementEvent(key, idPlayer) {
-    console.log(this.playerList);
     const playerToMove = this.playerList.find(p => p.id === idPlayer)
     const position = {x: playerToMove.posX, y : playerToMove.posY}
     switch (key) {

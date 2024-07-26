@@ -11,7 +11,7 @@ const players = []
 
 function genereteIdPlayer() {
   const id = parseInt(Math.random()*10000)
-  if(id === 0 ) {
+  if(id === 0 || players.includes(id)) {
     return genereteIdPlayer()
   }
   return id
@@ -27,7 +27,14 @@ io.on('connection', (socket)=> {
 
   io.emit('new-player', { idPlayer, position, players })
 
-  
+  socket.on('mov-player', (obj)=> {
+    players.map(p=> {
+      if(p.idPlayer === obj.idPlayer) {
+        p.position = obj.position
+      }
+    })
+    io.emit('update-screen', players)
+  })
 
   socket.on('disconnect', (reason)=> {
     io.emit('exit-player', idPlayer)
