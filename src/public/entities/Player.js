@@ -1,24 +1,12 @@
-class Player {
-  size = 20
+import Entity from "./Entity.js"
+
+export default class Player extends Entity {
+  
 
   constructor(id, body, position, game, itsMe) {
-    this.id = id
-    this.body = body
-    this.position = position
-    this.game = game
+    super(id, body, position, game, 20)
     this.itsMe = itsMe
-    this.calcArea()
   }
-
-  addOnGame() {
-    if(this.itsMe) {
-      this.body.fillStyle = 'rgb(255, 100, 100)'
-    } else {
-      this.body.fillStyle = 'rgba(0,0,0,0.4)'
-    }
-    this.body.fillRect(this.position.x, this.position.y, this.size, this.size)
-  }
-
 
   moveY(direction) {
     this.position.y += direction
@@ -28,12 +16,5 @@ class Player {
   moveX(direction) {
     this.position.x += direction
     this.game.updateScreen()
-  }
-
-  calcArea() {
-    this.area = {
-      x: [this.position.x, this.position.x + this.size],
-      y: [this.position.y, this.position.y + this.size]
-    }
   }
 }

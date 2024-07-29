@@ -11,99 +11,19 @@
     }
   </style>
 
-  <script src="entities/Player.js"></script>
-  <script src="entities/Game.js"></script>
-  <script src="entities/Fruit.js"></script>
+  <script type="module" src="main.js"></script>
+  <script type="module" src="Game.js"></script>
+  <script type="module" src="entities/Entity.js"></script>
+  <script type="module" src="entities/Player.js"></script>
+  <script type="module" src="entities/Fruit.js"></script>
 
-  <script src="controls/KeyboardInput.js"></script>
+  <script type="module" src="controls/KeyboardInput.js"></script>
 
   <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-  <canvas id="screenGame" width="600" height="600"></canvas>
-
-  <script>
-    const socket = io()
-    const screenGame = document.getElementById('screenGame')
-    const genericBody = screenGame.getContext('2d')
-    const game = new Game(screenGame, genericBody)
-
-    const keyboardInput = new KeyboardInput(document)
-
-    let player
-
-    function addFruit() {
-      let fruit = new Fruit(1, genericBody, {x: 50, y: 90}, game)
-      game.addPlayer(fruit)
-      game.subscribe((playerArea) => fruit.collided(playerArea))
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      addFruit()
-      const promise = await fetch('http://10.4.1.23:3000/registerPlayer')
-      const res = await promise.json()
-
-      const auxPlayer = res.players.find(p => p.id === res.idPlayer)
-
-      player = new Player(auxPlayer.id, genericBody, auxPlayer.position, game, true)
-      game.addPlayer(player)
-      keyboardInput.subscribe(key => movementPlayer(key, auxPlayer.id))
-
-      console.log(res.players);
-
-      res.players.map(p => {
-        if (p.id === res.idPlayer) return
-        let auxPlayer = new Player(p.id, genericBody, p.position, game, false)
-        game.addPlayer(auxPlayer)
-      })
-      game.renderGame()
-    })
-
-    socket.on('new-player', ({ _player, players }) => {
-      if (!player) return
-
-      let auxPlayer = new Player(_player.id, genericBody, _player.position, game, false)
-
-      game.addPlayer(auxPlayer)
-      game.updateScreen()
-    })
-
-    socket.on('disconnect', () => {
-      game.removePlayer(player.id)
-      player = null
-      location.reload();
-    })
-
-    socket.on('exit-player', (id) => {
-      game.removePlayer(id)
-    })
-
-    socket.on('update-screen', (obj) => {
-      game.playerList.map(p => {
-        if (obj.id !== p.id || obj.id === player.id) return
-        game.movementEvent(obj.movement, obj.id)
-      })
-      game.updateScreen()
-    })
-
-    function movementPlayer(key, id) {
-      const adapterMov = {
-        'w': 'top',
-        'a': 'left',
-        's': 'bottom',
-        'd': 'right',
-      }
-      if(game.movementEvent(adapterMov[key], id)) {
-        const obj = {
-          id,
-          movement: adapterMov[key]
-        }
-        socket.emit('mov-player', obj)
-      }
-    }
-
-  </script>
+  <canvas id="screenGame"></canvas>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
-class KeyboardInput {
+export default class KeyboardInput {
   //playerId
   document
-  pressObserves =  []
+  pressObserves = []
 
   constructor(_document) {
     //this.playerId = playerId
@@ -14,6 +14,9 @@ class KeyboardInput {
   }
 
   notifyAll(event) {
-    this.pressObserves.map(observe => observe(event.key))
+    this.pressObserves.map(observe => {
+      const auxKey = event.key.toLowerCase()
+      observe(auxKey)
+    })
   }
 }

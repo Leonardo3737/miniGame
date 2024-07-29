@@ -16,20 +16,17 @@ const player = new Player()
 
 app.use(express.json())
 app.use(cors())
-app.use(express.static('src/public'))
- 
-new RegisterPlayerController(
-  app, 
-  io, 
-  player, 
-  players
-) 
+app.use(express.static('src/public')) 
 
+// Routes
+new RegisterPlayerController(app, io, player, players)
+
+// Sockets
 io.on('connection', (socket)=> {
   new MovPlayerHandler(socket, io, player.id, players)
   new DisconnectHandler(socket, io, player.id, players)  
 })
  
-server.listen(3000, ()=> { 
+server.listen(3000, ()=> {  
   console.log('rodando na porta 3000');
 })   

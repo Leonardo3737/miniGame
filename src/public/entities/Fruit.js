@@ -1,34 +1,19 @@
-class Fruit {
-  size = 10
+import Entity from "./Entity.js"
+
+export default class Fruit extends Entity {
 
   constructor(id, body, position, game) {
-    this.id = id
-    this.body = body
-    this.position = position
-    this.game = game
-    this.calcArea()
+    super(id, body, position, game, 10)
   }
 
-  addOnGame() {
-    this.body.fillStyle = 'rgb(50, 255, 50)'
-    this.body.fillRect(this.position.x, this.position.y, this.size, this.size)
-  }
-
-  calcArea() {
-    this.area = {
-      x: [this.position.x, this.position.x + this.size],
-      y: [this.position.y, this.position.y + this.size]
-    }
-  }
-
-  collided(playerArea) {
-    if(
-      playerArea.x[0] <= this.area.x[0] &&
-      playerArea.x[1] >= this.area.x[1] &&
-      playerArea.y[0] <= this.area.y[0] &&
-      playerArea.y[0] >= this.area.y[0] 
-    ) {
-      console.log('colidiu');
-    }
+  collided(player) {
+    if (
+      player.area.x[0] > this.area.x[0] ||
+      player.area.x[1] < this.area.x[1] ||
+      player.area.y[0] > this.area.y[0] ||
+      player.area.y[1] < this.area.y[1]
+    ) return
+    this.game.addPointToPlayer(this.size, player.id)
+    this.game.removeEntity(this.id, 'fruits')
   }
 }
