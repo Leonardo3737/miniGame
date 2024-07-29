@@ -10,9 +10,13 @@
       border: 1px black solid
     }
   </style>
+
   <script src="entities/Player.js"></script>
   <script src="entities/Game.js"></script>
+  <script src="entities/Fruit.js"></script>
+
   <script src="controls/KeyboardInput.js"></script>
+
   <script src="/socket.io/socket.io.js"></script>
 </head>
 
@@ -29,7 +33,14 @@
 
     let player
 
+    function addFruit() {
+      let fruit = new Fruit(1, genericBody, {x: 50, y: 90}, game)
+      game.addPlayer(fruit)
+      game.subscribe((playerArea) => fruit.collided(playerArea))
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
+      addFruit()
       const promise = await fetch('http://10.4.1.23:3000/registerPlayer')
       const res = await promise.json()
 

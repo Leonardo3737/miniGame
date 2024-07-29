@@ -1,5 +1,5 @@
 class Player {
-  playerSize = 20
+  size = 20
 
   constructor(id, body, position, game, itsMe) {
     this.id = id
@@ -7,6 +7,7 @@ class Player {
     this.position = position
     this.game = game
     this.itsMe = itsMe
+    this.calcArea()
   }
 
   addOnGame() {
@@ -15,7 +16,7 @@ class Player {
     } else {
       this.body.fillStyle = 'rgba(0,0,0,0.4)'
     }
-    this.body.fillRect(this.position.x, this.position.y, this.playerSize, this.playerSize)
+    this.body.fillRect(this.position.x, this.position.y, this.size, this.size)
   }
 
 
@@ -27,5 +28,12 @@ class Player {
   moveX(direction) {
     this.position.x += direction
     this.game.updateScreen()
+  }
+
+  calcArea() {
+    this.area = {
+      x: [this.position.x, this.position.x + this.size],
+      y: [this.position.y, this.position.y + this.size]
+    }
   }
 }

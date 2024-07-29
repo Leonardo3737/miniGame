@@ -1,7 +1,7 @@
 class KeyboardInput {
   //playerId
   document
-  observes =  []
+  pressObserves =  []
 
   constructor(_document) {
     //this.playerId = playerId
@@ -10,10 +10,10 @@ class KeyboardInput {
   }
 
   subscribe(observe) {
-    this.observes.push(observe)
+    this.pressObserves.push(observe)
   }
 
   notifyAll(event) {
-    this.observes.map(observe => observe(event.key))
+    this.pressObserves.map(observe => observe(event.key))
   }
 }

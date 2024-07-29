@@ -1,6 +1,8 @@
 class Game {
+  playerList = []
+  movementObserves = []
+
   constructor(screenGame, genericBody) {
-    this.playerList = []
     this.screenGame = screenGame
     this.genericBody = genericBody
   }
@@ -26,10 +28,13 @@ class Game {
   
   movementEvent(direction, idPlayer) {
     const playerToMove = this.playerList.find(p => p.id === idPlayer)
-    const position = {x: playerToMove.position.x, y : playerToMove.position.y}
+    const position = {...playerToMove.position}
 
     if(!this.verifyMov(direction, position)) return false
     
+    playerToMove.calcArea()
+    this.notifyAll(playerToMove.area)
+
     switch (direction) {
       case 'top':
         playerToMove.moveY(-10);
@@ -55,4 +60,12 @@ class Game {
     (direction === 'bottom' && position.y < 579)
     return aux
   } 
+
+  subscribe(observe) {
+    this.movementObserves.push(observe)
+  }
+
+  notifyAll(event) {
+    this.movementObserves.map(observe => observe(event))
+  }
 }
