@@ -32,28 +32,29 @@ function addFruit() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   addFruit()
-  const promise = await fetch('http://192.168.100.72:3000/registerPlayer')
+  const promise = await fetch('http://localhost:3000/registerPlayer')
   const res = await promise.json()
 
-  const auxPlayer = res.players.find(p => p.id === res.idPlayer)
+  const auxPlayer = res.players[res.idPlayer]
+
+  console.log(auxPlayer);
 
   player = new Player(auxPlayer.id, genericBody, auxPlayer.position, game, true)
   game.addEntity(player, 'players')
-  keyboardInput.subscribe(key => movementPlayer(key, auxPlayer.id))
+  keyboardInput.subscribe(key => eventKeyPress(key, auxPlayer.id))
 
-  console.log(res.players);
+  const idList = Object.keys(res.players)
 
-  res.players.map(p => {
-    if (p.id === res.idPlayer) return
-    let auxPlayer = new Player(p.id, genericBody, p.position, game, false)
+  idList.map(id => {
+    if (id === res.idPlayer.toString()) return
+    let auxPlayer = new Player(id, genericBody, res.players[id].position, game, false)
     game.addEntity(auxPlayer, 'players')
   })
   game.renderGame()
 })
 
-socket.on('new-player', ({ _player, players }) => {
+socket.on('new-player', ({ _player }) => {
   if (!player) return
-
   let auxPlayer = new Player(_player.id, genericBody, _player.position, game, false)
 
   game.addEntity(auxPlayer, 'players')
@@ -71,25 +72,26 @@ socket.on('exit-player', (id) => {
 })
 
 socket.on('update-screen', (obj) => {
-  game.entitiesList.players.map(p => {
-    if (obj.id !== p.id || obj.id === player.id) return
-    game.movementEvent(obj.movement, obj.id)
-  })
+  if (obj.id === player.id) return
+  game.movePlayer(obj.movement, obj.id)
   game.updateScreen()
 })
 
-function movementPlayer(key, id) {
-  const adapterMov = {
+function eventKeyPress(key, id) {
+  const comands = {
     'w': 'top',
     'a': 'left',
     's': 'bottom',
     'd': 'right',
   }
-  if (game.movementEvent(adapterMov[key], id)) {
-    const obj = {
-      id,
-      movement: adapterMov[key]
-    }
-    socket.emit('mov-player', obj)
+
+  const keyValids = Object.keys(comands)
+
+  if (!keyValids.includes(key) || !game.movePlayer(comands[key], id)) return
+
+  const obj = {
+    id,
+    movement: comands[key]
   }
+  socket.emit('mov-player', obj)
 }

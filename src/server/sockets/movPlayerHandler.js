@@ -1,29 +1,22 @@
 export default class MovPlayerHandler {
   constructor(
-    socket, 
-    io, 
-    obj, 
+    socket,
+    io,
     players
   ) {
-    socket.on('mov-player', (obj)=> {
-      players.map(p=> { 
-        if(p.id === obj.id) {
-          switch (obj.movement) {
-            case 'top':
-              p.position.y += -10;
-              break;
-            case 'left':
-              p.position.x += -10;
-              break;
-            case 'bottom':
-              p.position.y += 10;
-              break;
-            case 'right':
-              p.position.x += 10;
-              break;
-          }
-        }
-      })
+    socket.on('mov-player', (obj) => {
+      const player = players[obj.id]
+
+      const movements = {
+        top: () => player.position.y += -10,
+        left: () => player.position.x += -10,
+        bottom: () => player.position.y += 10,
+        right: () => player.position.x += 10,
+      }
+
+      const execMovement = movements[obj.movement]
+      execMovement()
+
       io.emit('update-screen', obj)
     })
   }

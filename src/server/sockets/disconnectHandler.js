@@ -7,8 +7,7 @@ export default class DisconnectHandler {
   ) {
     socket.on('disconnect', () => {
       io.emit('exit-player', idPlayer)
-      const index = players.findIndex((e) => e.id === idPlayer)
-      players.splice(index, 1)
+      delete players[idPlayer]
     })
   }
 }

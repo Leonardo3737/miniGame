@@ -16,9 +16,11 @@ export default class RegisterPlayerController {
       player.id = idPlayer
       player.position = position
 
-      players.push({...player})
+      players[idPlayer] = {...player}
 
-      console.log(players);
+      console.clear()
+      console.log('|----- Jogadores Conectados -----|');
+      console.table(players, ['position']);
 
       io.emit('new-player', { _player: PlayerToFront(player) })
       res.status(200).send({idPlayer, players})

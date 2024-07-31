@@ -1,7 +1,12 @@
 export default class Game {
   entitiesList = {
-    'players': [],
-    'fruits': []
+    players: {},
+    fruits: {}
+  }
+
+  idEntitiesList = {
+    players: [],
+    fruits: []
   }
 
   constructor(screenGame, genericBody) {
@@ -10,18 +15,26 @@ export default class Game {
   }
 
   addEntity(entity, type) {
-    this.entitiesList[type].push(entity)
+    this.entitiesList[type][entity.id] = entity
+    this.idEntitiesList[type].push(entity.id)
   }
 
   removeEntity(id, type) {
-    const index = this.entitiesList[type].findIndex(player => player.id === id)
-    this.entitiesList[type].splice(index, 1)
+    delete this.entitiesList[type][id]
+
+    const index = this.idEntitiesList[type].findIndex(idEntity => idEntity === id)
+    this.idEntitiesList[type].splice(index, 1)
+
     this.updateScreen()
   }
 
   renderGame() {
-    this.entitiesList.fruits.map(fruit => fruit.addOnGame('rgb(50, 255, 50)'))
-    this.entitiesList.players.map(player => player.addOnGame(player.itsMe ? 'rgb(255, 100, 100)' : 'rgba(0,0,0,0.4)'))
+    this.idEntitiesList.fruits.map(idFruit => this.entitiesList.fruits[idFruit].addOnGame('rgb(50, 255, 50)'))
+
+    this.idEntitiesList.players.map(idPlayer => {
+      const player = this.entitiesList.players[idPlayer]
+      player.addOnGame(player.itsMe ? 'rgb(255, 100, 100)' : 'rgba(0,0,0,0.4)')
+    })
   }
 
   updateScreen() {
@@ -29,19 +42,24 @@ export default class Game {
     this.renderGame()
   }
 
-  movementEvent(direction, idPlayer) {
-    const playerToMove = this.entitiesList.players.find(p => p.id === idPlayer)
-    const position = { ...playerToMove.position }
+  movePlayer(direction, idPlayer) {
+    const playerToMove = this.entitiesList.players[idPlayer]
+    const { position } = playerToMove
+
+    const movements = {
+      top: () => playerToMove.moveY(-10),
+      left: () => playerToMove.moveX(-10),
+      bottom: () => playerToMove.moveY(10),
+      right: () => playerToMove.moveX(10),
+    }
 
     if (!this.verifyMov(direction, position, playerToMove.size)) return false
 
-    if (direction === 'top') playerToMove.moveY(-10);
-    if (direction === 'left') playerToMove.moveX(-10);
-    if (direction === 'bottom') playerToMove.moveY(10);
-    if (direction === 'right') playerToMove.moveX(10);
+    const movement = movements[direction]
+    movement()
 
     playerToMove.calcArea()
-    this.entitiesList.fruits.map(fruit => fruit.collided({ area: playerToMove.area, id: playerToMove.id }))
+    this.idEntitiesList.fruits.map(idFruit => this.entitiesList.fruits[idFruit].collided({ area: playerToMove.area, id: playerToMove.id }))
     return true
   }
 
@@ -57,7 +75,7 @@ export default class Game {
   }
 
   addPointToPlayer(point, idPlayer) {
-    const playerToAddPoint = this.entitiesList.players.find(p => p.id === idPlayer)
+    const playerToAddPoint = this.entitiesList.players[idPlayer]
     playerToAddPoint.size += point
     this.updateScreen()
   }

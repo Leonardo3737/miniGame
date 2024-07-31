@@ -11,7 +11,7 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
-const players = []
+const players = {}
 const player = new Player()
 
 app.use(express.json())
@@ -23,10 +23,11 @@ new RegisterPlayerController(app, io, player, players)
 
 // Sockets
 io.on('connection', (socket)=> {
-  new MovPlayerHandler(socket, io, player.id, players)
+  new MovPlayerHandler(socket, io, players)
   new DisconnectHandler(socket, io, player.id, players)  
 })
  
 server.listen(3000, ()=> {  
+  console.clear()
   console.log('rodando na porta 3000');
 })   
