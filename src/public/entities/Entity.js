@@ -21,6 +21,7 @@ export default class Entity {
   }
 
   isCollided() {
+    this.calcArea()
     const listEntities = Object.keys(this.game.entitiesList)
     listEntities.map(tEntity => {
       this.game.idEntitiesList[tEntity].map(idEntity => {

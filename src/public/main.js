@@ -1,4 +1,5 @@
 import KeyboardInput from './controls/KeyboardInput.js'
+import Bullet from './entities/Bullet.js'
 import Fruit from './entities/Fruit.js'
 import Player from './entities/Player.js'
 import Game from './Game.js'
@@ -14,10 +15,11 @@ const game = new Game(screenGame, genericBody)
 
 const keyboardInput = new KeyboardInput(document)
 
-let player
+let player 
 
 
 function addFruit() {
+  game.addEntity(new Bullet(1, genericBody, { x: 20, y:250}, game), 'bullets')
   game.addEntity(new Fruit(1, genericBody, { x: 50, y: 345 }, game), 'fruits')
   /* game.addEntity(new Fruit(2, genericBody, { x: 80, y: 165 }, game), 'fruits')
   game.addEntity(new Fruit(3, genericBody, { x: 203, y: 876 }, game), 'fruits')

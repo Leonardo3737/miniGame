@@ -1,12 +1,14 @@
 export default class Game {
   entitiesList = {
     players: {},
-    fruits: {}
+    fruits: {},
+    bullets: {}
   }
 
   idEntitiesList = {
     players: [],
-    fruits: []
+    fruits: [],
+    bullets: []
   }
 
   constructor(screenGame, genericBody) {
@@ -30,6 +32,7 @@ export default class Game {
 
   renderGame() {
     this.idEntitiesList.fruits.map(idFruit => this.entitiesList.fruits[idFruit].addOnGame('rgb(50, 255, 50)'))
+    this.idEntitiesList.bullets.map(idBullet => this.entitiesList.bullets[idBullet].addOnGame('rgb(200, 150, 50)'))
 
     this.idEntitiesList.players.map(idPlayer => {
       const player = this.entitiesList.players[idPlayer]
@@ -50,14 +53,13 @@ export default class Game {
 
     playerToMove.move(direction)
 
-    playerToMove.calcArea()
     playerToMove.isCollided()
     return true
   }
 
-  verifyMov(direction, position, playerSize) {
-    const maxWidth = screenGame.width - playerSize - 1
-    const maxHeight = screenGame.height - playerSize - 1
+  verifyMov(direction, position, size) {
+    const maxWidth = screenGame.width - size - 1
+    const maxHeight = screenGame.height - size - 1
     let aux =
       (direction === 'left' && position.x > 1) ||
       (direction === 'right' && position.x < maxWidth) ||
