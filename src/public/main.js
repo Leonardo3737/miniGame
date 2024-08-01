@@ -19,7 +19,7 @@ let player
 
 function addFruit() {
   game.addEntity(new Fruit(1, genericBody, { x: 50, y: 345 }, game), 'fruits')
-  game.addEntity(new Fruit(2, genericBody, { x: 80, y: 165 }, game), 'fruits')
+  /* game.addEntity(new Fruit(2, genericBody, { x: 80, y: 165 }, game), 'fruits')
   game.addEntity(new Fruit(3, genericBody, { x: 203, y: 876 }, game), 'fruits')
   game.addEntity(new Fruit(4, genericBody, { x: 508, y: 214 }, game), 'fruits')
   game.addEntity(new Fruit(5, genericBody, { x: 347, y: 643 }, game), 'fruits')
@@ -27,7 +27,7 @@ function addFruit() {
   game.addEntity(new Fruit(7, genericBody, { x: 732, y: 463 }, game), 'fruits')
   game.addEntity(new Fruit(8, genericBody, { x: 98, y: 123 }, game), 'fruits')
   game.addEntity(new Fruit(9, genericBody, { x: 893, y: 654 }, game), 'fruits')
-  game.addEntity(new Fruit(10, genericBody, { x: 50, y: 890 }, game), 'fruits')
+  game.addEntity(new Fruit(10, genericBody, { x: 50, y: 890 }, game), 'fruits') */
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   console.log(auxPlayer);
 
-  player = new Player(auxPlayer.id, genericBody, auxPlayer.position, game, true)
+  player = new Player(auxPlayer.id, genericBody, auxPlayer.position, game, true, auxPlayer.direction)
   game.addEntity(player, 'players')
   keyboardInput.subscribe(key => eventKeyPress(key, auxPlayer.id))
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   idList.map(id => {
     if (id === res.idPlayer.toString()) return
-    let auxPlayer = new Player(id, genericBody, res.players[id].position, game, false)
+    let auxPlayer = new Player(id, genericBody, res.players[id].position, game, false, res.players[id].direction)
     game.addEntity(auxPlayer, 'players')
   })
   game.renderGame()
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 socket.on('new-player', ({ _player }) => {
   if (!player) return
-  let auxPlayer = new Player(_player.id, genericBody, _player.position, game, false)
+  let auxPlayer = new Player(_player.id, genericBody, _player.position, game, false, _player.direction)
 
   game.addEntity(auxPlayer, 'players')
   game.updateScreen()

@@ -12,19 +12,19 @@ const server = http.createServer(app)
 const io = new Server(server)
 
 const players = {}
-const player = new Player()
+let idPlayer = {}
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('src/public')) 
 
 // Routes
-new RegisterPlayerController(app, io, player, players)
+new RegisterPlayerController(app, io, idPlayer, players)
 
 // Sockets
 io.on('connection', (socket)=> {
   new MovPlayerHandler(socket, io, players)
-  new DisconnectHandler(socket, io, player.id, players)  
+  new DisconnectHandler(socket, io, idPlayer.id, players)  
 })
  
 server.listen(3000, ()=> {  

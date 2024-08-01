@@ -1,14 +1,21 @@
 export default class Player {
   id
   position
+  direction
 
-  moveY(direction) {
-    this.position.y += direction
-    this.game.updateScreen()
+  constructor(id, position) {
+    this.direction = 'top'
+    this.id = id
+    this.position = position
   }
 
-  moveX(direction) {
-    this.position.x += direction
-    this.game.updateScreen()
+  moveY = (_direction) => {
+    this.direction = _direction > 0 ? 'bottom': 'top'
+    this.position.y += _direction
+  }
+
+  moveX = (_direction) => {
+    this.direction = _direction > 0 ? 'right': 'left'
+    this.position.x += _direction
   }
 }

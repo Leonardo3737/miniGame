@@ -46,20 +46,12 @@ export default class Game {
     const playerToMove = this.entitiesList.players[idPlayer]
     const { position } = playerToMove
 
-    const movements = {
-      top: () => playerToMove.moveY(-10),
-      left: () => playerToMove.moveX(-10),
-      bottom: () => playerToMove.moveY(10),
-      right: () => playerToMove.moveX(10),
-    }
-
     if (!this.verifyMov(direction, position, playerToMove.size)) return false
 
-    const movement = movements[direction]
-    movement()
+    playerToMove.move(direction)
 
     playerToMove.calcArea()
-    this.idEntitiesList.fruits.map(idFruit => this.entitiesList.fruits[idFruit].collided({ area: playerToMove.area, id: playerToMove.id }))
+    playerToMove.isCollided()
     return true
   }
 
@@ -75,8 +67,8 @@ export default class Game {
   }
 
   addPointToPlayer(point, idPlayer) {
-    const playerToAddPoint = this.entitiesList.players[idPlayer]
+    /* const playerToAddPoint = this.entitiesList.players[idPlayer]
     playerToAddPoint.size += point
-    this.updateScreen()
+    this.updateScreen() */
   }
 } 

@@ -8,10 +8,10 @@ export default class MovPlayerHandler {
       const player = players[obj.id]
 
       const movements = {
-        top: () => player.position.y += -10,
-        left: () => player.position.x += -10,
-        bottom: () => player.position.y += 10,
-        right: () => player.position.x += 10,
+        top: () => player.moveY(-10),
+        left: () => player.moveX(-10),
+        bottom: () => player.moveY(10),
+        right: () => player.moveX(10),
       }
 
       const execMovement = movements[obj.movement]
