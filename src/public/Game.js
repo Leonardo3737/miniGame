@@ -74,7 +74,7 @@ export default class Game {
         this.addEntity(bullet, 'bullets')
         bullet.subscribe(this.onDamage)
         return true
-      }
+      } 
     }
     return actions[action]()
   }
