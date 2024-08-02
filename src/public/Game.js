@@ -1,3 +1,5 @@
+import Bullet from "./entities/Bullet.js"
+
 export default class Game {
   entitiesList = {
     players: {},
@@ -11,9 +13,11 @@ export default class Game {
     bullets: []
   }
 
-  constructor(screenGame, genericBody) {
+  constructor(screenGame, genericBody, onDamage, updateLifeBar) {
     this.screenGame = screenGame
     this.genericBody = genericBody
+    this.onDamage = onDamage
+    this.updateLifeBar = updateLifeBar
   }
 
   addEntity(entity, type) {
@@ -45,15 +49,43 @@ export default class Game {
     this.renderGame()
   }
 
-  movePlayer(direction, idPlayer) {
-    const playerToMove = this.entitiesList.players[idPlayer]
-    const { position } = playerToMove
+  playerAction(comand, idPlayer) {
+    const [action] = comand
+    const playerToAction = this.entitiesList.players[idPlayer]
 
-    if (!this.verifyMov(direction, position, playerToMove.size)) return false
+    if(!playerToAction) return false
 
-    playerToMove.move(direction)
+    const { direction: playerDirection, position } = playerToAction
 
-    playerToMove.isCollided()
+    const actions = {
+      move: () => this.playerMove(playerToAction, comand, position),
+      shot: () => {
+        const idBullet = this.idEntitiesList.bullets.length
+
+        const gunSize = playerToAction.size / 3
+        const mid = (playerToAction.size - gunSize) / 2
+        const positions = {
+          top: {x:position.x + mid, y: position.y + playerToAction.size - gunSize},
+          bottom: {x:position.x + mid, y: position.y},
+          right: {x:position.x, y: position.y + mid},
+          left: {x:position.x + playerToAction.size - gunSize, y:position.y + mid}
+        }
+        const bullet = new Bullet(this.createId(), this.genericBody, positions[playerDirection], this, idPlayer, playerDirection)
+        this.addEntity(bullet, 'bullets')
+        bullet.subscribe(this.onDamage)
+        return true
+      }
+    }
+    return actions[action]()
+  }
+
+  playerMove(player, comand, position) {
+    const [action, movDirection] = comand
+
+    if (!this.verifyMov(movDirection, position, player.size)) return false
+    player[action](movDirection)
+
+    player.isCollided()
     return true
   }
 
@@ -72,5 +104,23 @@ export default class Game {
     /* const playerToAddPoint = this.entitiesList.players[idPlayer]
     playerToAddPoint.size += point
     this.updateScreen() */
+  }
+
+  createId() {
+    const id = parseInt(Math.random()*1000000)
+  
+    if(id === 0 || this.idEntitiesList.bullets.includes(id)) {
+      return genereteIdPlayer()
+    }
+    return id
+  }
+
+  damagePlayer(idPlayer, damage) {
+    console.log(damage);
+    this.entitiesList.players[idPlayer].life -= damage
+    if(this.entitiesList.players[idPlayer].life <= 0) {
+      this.removeEntity(idPlayer, 'players')
+    }
+    this.updateLifeBar()
   }
 } 

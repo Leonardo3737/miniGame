@@ -2,6 +2,7 @@ export default class Player {
   id
   position
   direction
+  life = 100
 
   constructor(id, position) {
     this.direction = 'top'

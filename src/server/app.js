@@ -6,6 +6,7 @@ import DisconnectHandler from "./sockets/disconnectHandler.js"
 import MovPlayerHandler from "./sockets/movPlayerHandler.js"
 import cors from 'cors'
 import RegisterPlayerController from './controllers/RegisterPlayerController.js'
+import DamagePlayerHandler from "./sockets/damagePlayerHandler.js"
 
 const app = express()
 const server = http.createServer(app)
@@ -24,7 +25,8 @@ new RegisterPlayerController(app, io, idPlayer, players)
 // Sockets
 io.on('connection', (socket)=> {
   new MovPlayerHandler(socket, io, players)
-  new DisconnectHandler(socket, io, idPlayer.id, players)  
+  new DisconnectHandler(socket, io, idPlayer.id, players)
+  new DamagePlayerHandler(socket, io, players)
 })
  
 server.listen(3000, ()=> {  

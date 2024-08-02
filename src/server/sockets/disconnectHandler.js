@@ -1,3 +1,5 @@
+import printPlayers from "../utils/printPlayers.js"
+
 export default class DisconnectHandler {
   constructor(
     socket,
@@ -8,6 +10,7 @@ export default class DisconnectHandler {
     socket.on('disconnect', () => {
       io.emit('exit-player', idPlayer)
       delete players[idPlayer]
+      printPlayers(players)
     })
   }
 }

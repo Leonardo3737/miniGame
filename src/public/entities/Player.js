@@ -1,11 +1,13 @@
 import Entity from "./Entity.js"
 
 export default class Player extends Entity {
+  velocity = 10
+  life = 100
+
   constructor(id, body, position, game, itsMe, direction) {
     super(id, body, position, game, 20)
     this.itsMe = itsMe
     this.direction = direction
-    this.velocity = 10
   }
 
   move(_direction) {

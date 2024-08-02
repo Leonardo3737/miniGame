@@ -6,20 +6,21 @@ import Game from './Game.js'
 
 const screenSize = 900
 
+const lifeBar = document.getElementById('lifeBar')
 const screenGame = document.getElementById('screenGame')
 screenGame.width = screenSize
 screenGame.height = screenSize
 const socket = io()
 const genericBody = screenGame.getContext('2d')
-const game = new Game(screenGame, genericBody)
+const game = new Game(screenGame, genericBody, onDamage, updateLifeBar)
+
 
 const keyboardInput = new KeyboardInput(document)
 
-let player 
+let player
 
 
 function addFruit() {
-  game.addEntity(new Bullet(1, genericBody, { x: 20, y:250}, game), 'bullets')
   game.addEntity(new Fruit(1, genericBody, { x: 50, y: 345 }, game), 'fruits')
   /* game.addEntity(new Fruit(2, genericBody, { x: 80, y: 165 }, game), 'fruits')
   game.addEntity(new Fruit(3, genericBody, { x: 203, y: 876 }, game), 'fruits')
@@ -40,20 +41,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const auxPlayer = res.players[res.idPlayer]
 
   console.log(auxPlayer);
-
   player = new Player(auxPlayer.id, genericBody, auxPlayer.position, game, true, auxPlayer.direction)
+  
+  updateLifeBar() 
+
+
   game.addEntity(player, 'players')
   keyboardInput.subscribe(key => eventKeyPress(key, auxPlayer.id))
 
   const idList = Object.keys(res.players)
 
   idList.map(id => {
-    if (id === res.idPlayer.toString()) return
-    let auxPlayer = new Player(id, genericBody, res.players[id].position, game, false, res.players[id].direction)
+    let auxId = parseInt(id)
+    if (auxId === res.idPlayer) return
+    let auxPlayer = new Player(auxId, genericBody, res.players[id].position, game, false, res.players[id].direction)
     game.addEntity(auxPlayer, 'players')
   })
   game.renderGame()
 })
+
 
 socket.on('new-player', ({ _player }) => {
   if (!player) return
@@ -75,25 +81,34 @@ socket.on('exit-player', (id) => {
 
 socket.on('update-screen', (obj) => {
   if (obj.id === player.id) return
-  game.movePlayer(obj.movement, obj.id)
+  game.playerAction([obj.type, obj.movement], parseInt(obj.id))
   game.updateScreen()
 })
 
 function eventKeyPress(key, id) {
   const comands = {
-    'w': 'top',
-    'a': 'left',
-    's': 'bottom',
-    'd': 'right',
+    'w': ['move', 'top'],
+    'a': ['move', 'left'],
+    's': ['move', 'bottom'],
+    'd': ['move', 'right'],
+    ' ': ['shot', ' ']
   }
 
   const keyValids = Object.keys(comands)
 
-  if (!keyValids.includes(key) || !game.movePlayer(comands[key], id)) return
-
+  if (!keyValids.includes(key) || !game.playerAction(comands[key], id)) return
   const obj = {
+    type: comands[key][0],
     id,
-    movement: comands[key]
+    movement: comands[key][1]
   }
-  socket.emit('mov-player', obj)
+  socket.emit('player-action', obj)
+}
+
+function onDamage(idEntity, damage) {
+  socket.emit('damage-player', { idEntity, damage })
+}
+
+function updateLifeBar() {
+  lifeBar.style.width = `${player.life}%`
 }

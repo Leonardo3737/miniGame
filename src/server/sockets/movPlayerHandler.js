@@ -4,17 +4,23 @@ export default class MovPlayerHandler {
     io,
     players
   ) {
-    socket.on('mov-player', (obj) => {
+    socket.on('player-action', (obj) => {
+      console.log(obj);
       const player = players[obj.id]
 
       const movements = {
-        top: () => player.moveY(-10),
-        left: () => player.moveX(-10),
-        bottom: () => player.moveY(10),
-        right: () => player.moveX(10),
+        move: {
+          top: () => player.moveY(-10),
+          left: () => player.moveX(-10),
+          bottom: () => player.moveY(10),
+          right: () => player.moveX(10),
+        },
+        shot: {
+          " ": ()=>{}
+        }
       }
 
-      const execMovement = movements[obj.movement]
+      const execMovement = movements[obj.type][obj.movement]
       execMovement()
 
       io.emit('update-screen', obj)

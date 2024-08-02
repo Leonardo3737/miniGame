@@ -6,9 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
     canvas {
       border: 1px black solid
     }
+
+    #life {
+      width: 500px;
+      height: 30px;
+      border: 3px solid black;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3px;
+    }
+
+    #lifeBar {
+      height: 100%;
+      background-color: crimson;
+      border-radius: 15px;
+    }
+
   </style>
   <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -16,6 +50,9 @@
 <body>
   <canvas id="screenGame"></canvas>
   <script type="module" src="main.js"></script>
+  <div id="life">
+    <div id="lifeBar"></div>
+  </div>
 </body>
 
 </html>

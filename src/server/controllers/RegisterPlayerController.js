@@ -2,6 +2,7 @@ import Player from "../entities/Player.js"
 import createIdPlayer from "../factories/CreateIdPlayer.js"
 import PlayerToFront from "../factories/CreatePlayerToFront.js"
 import createPosition from "../factories/CreatePosition.js"
+import printPlayers from "../utils/printPlayers.js"
 
 export default class RegisterPlayerController {
   constructor(
@@ -18,9 +19,7 @@ export default class RegisterPlayerController {
 
       players[idPlayer.id] = player
 
-      //console.clear()
-      console.log('|----- Jogadores Conectados -----|');
-      console.table(players, ['position', 'direction']);
+      printPlayers(players)
 
       io.emit('new-player', { _player: PlayerToFront(player)})
       res.status(200).send({idPlayer: idPlayer.id, players})
